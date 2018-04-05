@@ -1,59 +1,111 @@
-var arrayAddress = checkLocalStorage();
-var add_button = document.getElementById("addButton");
-var name = document.getElementById("inputName");
-// var show = document.getElementById("show");
-function showAddress() {
-  show.innerHTML = "";
+const form = document.getElementById('form');
+const input = document.getElementById('inputName');
+const show = document.getElementById('show');
+const buttonClear = document.getElementById('clear');
+const buttonAdd = document.getElementById('addButton');
+let itemsArray = localStorage.getItem('items') ? JSON.parse(localStorage.getItem('items')) : [];
 
-  for (var i = 0; i < arrayAddress.length; i++) {
-    let li = document.createElement('li');
-    let listAddress = document.createTextNode(arrayAddress[i].inputName);
-    li.setAttribute("id", "index_" + i);
-    li.setAttribute("onclick", `destroy(${i})`)
-    li.appendChild(listAddress);
-    show.appendChild(li);
-  }
+
+// save to localStorage
+
+localStorage.setItem('items', JSON.stringify(itemsArray));
+const data = JSON.parse(localStorage.getItem('items'));
+
+// add a list of content
+
+const listContact = (text) => {
+  const list = document.createElement('li');
+  list.textContent = text;
+  show.appendChild(list);
 }
 
-function addAddress() {
-  if (name.value !== "") {
-    var objectAddress = {};
-    objectAddress.inputName = name.value;
-    arrayAddress.push(objectAddress);
-  } else {
-    return arrayAddress;
-  }
-}
+// push list
 
-function checkLocalStorage() {
-  if (localStorage.addressBook) {
-    const arrayContact = JSON.parse(localStorage.addressBook);
-    return arrayContact;
-  } else {
-    localStorage.addressBook = "[]";
-    return [];
-  }
-}
+const createContact = function(e) {
+  e.preventDefault();
 
-function storeAddressToLocalStorage() {
-  localStorage.addressBook = JSON.stringify(addAddress());
-}
+  itemsArray.push(input.value);
+  localStorage.setItem('items', JSON.stringify(itemsArray));
+  listContact(input.value);
+  input.value = '';
+};
 
-function callAddThenShow() {
-  storeAddressToLocalStorage();
-  showAddress();
-}
+// enter in input box to create list
+form.addEventListener('submit', createContact);
 
-add_button.addEventListener("click", callAddThenShow);
-name.addEventListener("keyup", function(event){
-  event.preventDefault();
-  if (event.keyCode === 13) {
-    add_button.click();
-  }
+
+// click add button to push to list
+buttonAdd.addEventListener('click', createContact);
+
+
+data.forEach(item => {
+  listContact(item);
 });
 
 
-showAddress();
+
+buttonClear.addEventListener('click', function() {
+  localStorage.clear();
+  while (show.firstChild) {
+    show.removeChild(show.firstChild);
+  }
+});
+// var arrayAddress = checkLocalStorage();
+// var add_button = document.getElementById("addButton");
+// var name = document.getElementById("inputName");
+// // var show = document.getElementById("show");
+// function showAddress() {
+//   show.innerHTML = "";
+//
+//   for (var i = 0; i < arrayAddress.length; i++) {
+//     let li = document.createElement('li');
+//     let listAddress = document.createTextNode(arrayAddress[i].inputName);
+//     li.setAttribute("id", "index_" + i);
+//     li.setAttribute("onclick", `destroy(${i})`)
+//     li.appendChild(listAddress);
+//     show.appendChild(li);
+//   }
+// }
+//
+// function addAddress() {
+//   if (name.value !== "") {
+//     var objectAddress = {};
+//     objectAddress.inputName = name.value;
+//     arrayAddress.push(objectAddress);
+//   } else {
+//     alert("Please insert Your Name!")
+//   }
+//   name.value = "";
+//   return arrayAddress;
+// }
+//
+// function checkLocalStorage() {
+//   if (localStorage.addressBook) {
+//     const arrayContact = JSON.parse(localStorage.addressBook);
+//     return arrayContact;
+//   } else {
+//     localStorage.addressBook = "[]";
+//     return [];
+//   }
+// }
+//
+// function storeAddressToLocalStorage() {
+//   localStorage.addressBook = JSON.stringify(addAddress());
+// }
+//
+// function callAddThenShow() {
+//   storeAddressToLocalStorage();
+//   showAddress();
+// }
+//
+// add_button.addEventListener("click", callAddThenShow);
+// name.addEventListener("keyup", function(event){
+//   event.preventDefault();
+//   if (event.keyup === 13) {
+//     add_button.click();
+//   }
+// });
+// showAddress();
 // var arr = [];
 // function addBook() {
 //   var objectAdd={};
